@@ -1,0 +1,23 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Artificial Intelligence Articles</title>
+</head>
+<body>
+    <h1>AI Articles</h1>
+    <ul>
+        {% for article in articles %}
+        <li>
+            <h2>{{ article['title'] }}</h2>
+            <p>Authors: {{ article['authors'] }}</p>
+            <p>Date Published: {{ article['date'] }}</p>
+            <a href="{{ article['pdf_url'] }}" target="_blank">Original PDF</a>
+            <p>{{ article['article_text'] }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
