@@ -1,6 +1,6 @@
+
 {
     "builds": [
-      { "src": "/(.*)", "dest": "/processing/templates/$1" }
+        { "src": "api/app.py", "use": "@vercel/python" }
     ]
-  }
-  
+}
