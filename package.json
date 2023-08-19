@@ -9,8 +9,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "echo 'No build necessary'"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Rayan Alyousef",
   "license": "ISC",
