@@ -2,21 +2,44 @@
 import json
 import psycopg2
 import os
+import sys
 
-# Replace "postgresql://username:password@host:port/dbname" with your actual PostgreSQL credentials
-DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://username:password@host:port/dbname')
-conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+# Database Connection String
+DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://rayanalyousef:Rayangsy1@localhost:5432/papers')
+conn = psycopg2.connect(DATABASE_URL)
 cursor = conn.cursor()
 
+# Create Table If Not Exists
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS papers (
+        id serial PRIMARY KEY,
+        topic VARCHAR(255),
+        title VARCHAR(1024),
+        authors TEXT,
+        date DATE,
+        pdf_url VARCHAR(1024),
+        article_text TEXT
+    );
+""")
+conn.commit()
+
+# List of Topics
 topics_queries = ['Solar Energy', 'Blockchain', 'Space Tech', 'Artificial Intelligence', 'Fusion Energy']
 
+# Base Path to Project Nebula Directory
+project_nebula_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Process Each Topic
 for topic in topics_queries:
-    filename = f'processed_papers_{topic.replace(" ", "_")}.json'
+    # Construct Absolute File Path
+    filename = os.path.join(project_nebula_dir, f'processed_papers_{topic.replace(" ", "_")}.json')
     
     try:
+        # Open and Load JSON File
         with open(filename, 'r') as file:
             data = json.load(file)
 
+        # Extract Paper Data from JSON
         titles = data['titles']
         authors = data['authors']
         dates = data['dates']
@@ -24,6 +47,7 @@ for topic in topics_queries:
         article_texts = data['article_texts']
         topics = data['topics']
 
+        # Insert Each Paper into Database
         for paper_id in titles.keys():
             topic = topics.get(paper_id)
             title = titles.get(paper_id)
@@ -33,7 +57,8 @@ for topic in topics_queries:
             article_text = article_texts.get(paper_id)
 
             try:
-                cursor.execute('INSERT INTO papers (topic, title, authors, date, pdf_url, article_text) VALUES (?, ?, ?, ?, ?, ?)', 
+                # Execute SQL Insert Statement
+                cursor.execute('INSERT INTO papers (topic, title, authors, date, pdf_url, article_text) VALUES (%s, %s, %s, %s, %s, %s)', 
                                (topic, title, author, date, pdf_url, article_text))
                 print(f"Inserted data for paper ID: {paper_id} into the database")
             except psycopg2.Error as e:
@@ -42,6 +67,6 @@ for topic in topics_queries:
         print(f"File {filename} not found. Skipping this topic. Error: {e}")
         continue
 
+# Commit Transactions and Close Connection
 conn.commit()
 conn.close()
-

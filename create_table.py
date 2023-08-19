@@ -1,13 +1,16 @@
+import psycopg2
 
-import sqlite3
+# Replace with your actual PostgreSQL credentials
+DATABASE_URL = 'postgresql://username:password@host:port/dbname'
 
-# Connect to the SQLite database
-conn = sqlite3.connect('/Users/rayanalyousef/Documents/GitHub/Project-Nebula/papers.db')
+# Connect to the PostgreSQL database
+conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 cursor = conn.cursor()
 
 # Define the SQL command to create the table
 create_table_command = '''
 CREATE TABLE papers (
+    paper_id SERIAL PRIMARY KEY,
     topic TEXT,
     title TEXT,
     authors TEXT,
@@ -20,6 +23,8 @@ CREATE TABLE papers (
 # Execute the SQL command
 cursor.execute(create_table_command)
 
-# Commit the changes and close the connection
+# Commit the changes
 conn.commit()
+
+# Close the connection
 conn.close()
