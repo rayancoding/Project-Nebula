@@ -15,7 +15,7 @@
             <p>Authors: {{ article['authors'] }}</p>
             <p>Date Published: {{ article['date'] }}</p>
             <a href="{{ article['pdf_url'] }}" target="_blank">Original PDF</a> 
-            <p>{{ article['article_text'] }}</p> 
+            <p>{{ article.article_text }}</p>
         {% endfor %}
     </ul>
 </body>
